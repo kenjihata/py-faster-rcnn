@@ -41,7 +41,7 @@ __C.TRAIN.SCALES = (600,)
 __C.TRAIN.MAX_SIZE = 1000
 
 # Images to use per minibatch
-__C.TRAIN.IMS_PER_BATCH = 2
+__C.TRAIN.IMS_PER_BATCH = 2 
 
 # Minibatch size (number of regions of interest [ROIs])
 __C.TRAIN.BATCH_SIZE = 128
@@ -193,7 +193,7 @@ __C.ROOT_DIR = osp.abspath(osp.join(osp.dirname(__file__), '..', '..'))
 __C.DATA_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'data'))
 
 # Model directory
-__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models', 'pascal_voc'))
+__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models', 'vg'))
 
 # Name (or path to) the matlab executable
 __C.MATLAB = 'matlab'

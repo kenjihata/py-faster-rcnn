@@ -13,6 +13,7 @@ import roi_data_layer.roidb as rdl_roidb
 from utils.timer import Timer
 import numpy as np
 import os
+import pickle
 
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
@@ -36,8 +37,18 @@ class SolverWrapper(object):
 
         if cfg.TRAIN.BBOX_REG:
             print 'Computing bounding-box regression targets...'
-            self.bbox_means, self.bbox_stds = \
+            if (os.path.isfile('data/cache/bbox_means.pkl') and os.path.isfile('data/cache/bbox_stds.pkl')):
+                with open('data/cache/bbox_means.pkl', 'rb') as f:
+                    self.bbox_means = pickle.load(f)
+                with open('data/cache/bbox_stds.pkl', 'rb') as f:
+                    self.bbox_stds = pickle.load(f)
+            else:
+                self.bbox_means, self.bbox_stds = \
                     rdl_roidb.add_bbox_regression_targets(roidb)
+                with open('data/cache/bbox_means.pkl', 'wb') as f:
+                    pickle.dump(self.bbox_means, f)
+                with open('data/cache/bbox_stds.pkl', 'wb') as f:
+                    pickle.dump(self.bbox_stds, f)
             print 'done'
 
         self.solver = caffe.SGDSolver(solver_prototxt)
@@ -49,7 +60,6 @@ class SolverWrapper(object):
         self.solver_param = caffe_pb2.SolverParameter()
         with open(solver_prototxt, 'rt') as f:
             pb2.text_format.Merge(f.read(), self.solver_param)
-
         self.solver.net.layers[0].set_roidb(roidb)
 
     def snapshot(self):
