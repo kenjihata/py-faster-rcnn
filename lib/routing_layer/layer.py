@@ -11,7 +11,8 @@ class RoutingLayer(caffe.Layer):
         with open('tree.json') as f:
             tree_data = json.load(f)
             self.object_list = tree_data['object_list']
-            self.children_list = tree_data['children_list']
+            self.all_children_list = tree_data['all_children_list']
+            self.immediate_children_list = tree_data['immediate_children_list']
         assert self.routing_idx >= 0 and self.routing_idx < len(self.object_list)
         self.children = self.children_list[self.routing_idx]
 
@@ -22,7 +23,9 @@ class RoutingLayer(caffe.Layer):
         top[0] = bottom[0]
 
     def backward(self, top, propagate_down, bottom):
-        softmax_level = bottom[1]
-        if softmax_level in self.children:
-            bottom[0].diff[...] = 1
+        labels_idxs = bottom[1] 
+        for i in xrange(len(labels_idxs)):
+            labels_idx = labels_idxs[i]
+            if labels_idx in self.all_children_list:
+                bottom[0].diff[i,:] = 1
 

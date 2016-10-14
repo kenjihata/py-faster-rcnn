@@ -16,6 +16,8 @@ from roi_data_layer.minibatch import get_minibatch
 import numpy as np
 import yaml
 from multiprocessing import Process, Queue
+import json
+import os
 
 class RoIDataLayer(caffe.Layer):
     """Fast R-CNN data layer used for training."""
@@ -60,7 +62,7 @@ class RoIDataLayer(caffe.Layer):
         else:
             db_inds = self._get_next_minibatch_inds()
             minibatch_db = [self._roidb[i] for i in db_inds]
-            return get_minibatch(minibatch_db, self._num_classes)
+            return get_minibatch(minibatch_db, self._num_classes, self.tree)
 
     def set_roidb(self, roidb):
         """Set the roidb to be used by this layer during training."""
@@ -82,6 +84,9 @@ class RoIDataLayer(caffe.Layer):
 
     def setup(self, bottom, top):
         """Setup the RoIDataLayer."""
+
+        with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
+            self.tree = json.load(f)
 
         # parse the layer parameter string, which must be valid YAML
         layer_params = yaml.load(self.param_str_)
