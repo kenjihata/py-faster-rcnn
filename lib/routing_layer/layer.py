@@ -3,7 +3,7 @@ import numpy as np
 import yaml
 import json
 
-class SoftmaxRoutingLayer(caffe.Layer):
+class RoutingLayer(caffe.Layer):
     
     def setup(self, bottom, top):
         layer_params = yaml.load(self.param_str_)
@@ -24,5 +24,5 @@ class SoftmaxRoutingLayer(caffe.Layer):
     def backward(self, top, propagate_down, bottom):
         softmax_level = bottom[1]
         if softmax_level in self.children:
-            TODO
+            bottom[0].diff[...] = 1
 
