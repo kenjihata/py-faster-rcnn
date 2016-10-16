@@ -13,7 +13,7 @@ class RoutingLayer(caffe.Layer):
         with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
             tree_data = json.load(f)
             self.object_list = tree_data['object_list']
-            self.all_children_list = tree_data['all_children_list'][self.routing_idx]
+            self.all_children_list = tree_data['all_children_list']
             self.immediate_children_list = tree_data['immediate_children_list']
         assert self.routing_idx >= 0 and self.routing_idx < len(self.object_list)
         self.children = self.all_children_list[self.routing_idx]
@@ -30,6 +30,7 @@ class RoutingLayer(caffe.Layer):
         labels_idxs = bottom[1].data
         for i in xrange(len(labels_idxs)):
             labels_idx = int(labels_idxs[i])
-            if labels_idx in self.all_children_list:
-                bottom[0].diff[i,:] = 1
-
+            if labels_idx in self.children:
+                bottom[0].diff[i,:] = top[0].diff[i,:] 
+            else:
+                bottom[0].diff[i,:] = 0
