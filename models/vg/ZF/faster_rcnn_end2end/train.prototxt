@@ -7,7 +7,7 @@ layer {
   python_param {
     module: "roi_data_layer.layer"
     layer: "RoIDataLayer"
-    param_str: "\'num_classes\': 21"
+    param_str: "\'num_classes\': 6"
   }
 }
 layer {
@@ -365,10 +365,12 @@ layer {
   top: "bbox_targets"
   top: "bbox_inside_weights"
   top: "bbox_outside_weights"
+  top: "labels_0"
+  top: "labels_1"
   python_param {
     module: "rpn.proposal_target_layer"
     layer: "ProposalTargetLayer"
-    param_str: "\'num_classes\': 21"
+    param_str: "\'num_classes\': 6"
   }
 }
 layer {
@@ -446,29 +448,6 @@ layer {
   }
 }
 layer {
-  name: "cls_score"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 21
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
   name: "bbox_pred"
   type: "InnerProduct"
   bottom: "fc7"
@@ -480,7 +459,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 84
+    num_output: 24
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -492,11 +471,56 @@ layer {
   }
 }
 layer {
-  name: "loss_cls"
-  type: "SoftmaxWithLoss"
-  bottom: "cls_score"
+  name: "loss_bbox"
+  type: "SmoothL1Loss"
+  bottom: "bbox_pred"
+  bottom: "bbox_targets"
+  bottom: "bbox_inside_weights"
+  bottom: "bbox_outside_weights"
+  top: "bbox_loss"
+  loss_weight: 1
+}
+layer {
+  name: "cls_score_0"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_0"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_0"
+  type: "Python"
+  bottom: "cls_score_0"
   bottom: "labels"
-  top: "cls_loss"
+  top: "routing_0"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 0"
+  }
+}
+layer {
+  name: "loss_cls_0"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_0"
+  bottom: "labels_0"
+  top: "cls_loss_0"
   loss_weight: 1
   propagate_down: true
   propagate_down: false
@@ -506,13 +530,52 @@ layer {
   }
 }
 layer {
-  name: "loss_bbox"
-  type: "SmoothL1Loss"
-  bottom: "bbox_pred"
-  bottom: "bbox_targets"
-  bottom: "bbox_inside_weights"
-  bottom: "bbox_outside_weights"
-  top: "bbox_loss"
+  name: "cls_score_1"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_1"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_1"
+  type: "Python"
+  bottom: "cls_score_1"
+  bottom: "labels"
+  top: "routing_1"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 1"
+  }
+}
+layer {
+  name: "loss_cls_1"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_1"
+  bottom: "labels_1"
+  top: "cls_loss_1"
   loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
 }
 

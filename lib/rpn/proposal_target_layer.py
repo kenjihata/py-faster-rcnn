@@ -12,6 +12,8 @@ import numpy.random as npr
 from fast_rcnn.config import cfg
 from fast_rcnn.bbox_transform import bbox_transform
 from utils.cython_bbox import bbox_overlaps
+import json
+import os
 
 DEBUG = False
 
@@ -35,6 +37,16 @@ class ProposalTargetLayer(caffe.Layer):
         top[3].reshape(1, self._num_classes * 4)
         # bbox_outside_weights
         top[4].reshape(1, self._num_classes * 4)
+        
+        with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
+            self.tree = json.load(f)
+        idx = 5
+        for i, route_map in enumerate(self.tree['immediate_children_list']):
+            children_len = len(route_map)
+            if children_len == 0: continue
+            top[idx].reshape(1, 1)
+            # self._name_to_top_map['labels_'+str(i)] = idx
+            idx += 1
 
     def forward(self, bottom, top):
         # Proposal ROIs (0, x1, y1, x2, y2) coming from RPN
@@ -94,6 +106,22 @@ class ProposalTargetLayer(caffe.Layer):
         # bbox_outside_weights
         top[4].reshape(*bbox_inside_weights.shape)
         top[4].data[...] = np.array(bbox_inside_weights > 0).astype(np.float32)
+
+        routing_mapping_list = self.tree['routing_mapping_list']
+        idx = 5
+        # each softmax route 
+        for i, routing_map in enumerate(routing_mapping_list):
+            if not routing_map: continue
+            labels_i_blob = np.empty_like(top[1].data)
+            for index, value in np.ndenumerate(top[1].data):
+                if int(value) in routing_map:
+                    labels_i_blob[index] = routing_map[int(value)]
+                else:
+                    labels_i_blob[index] = -1
+
+            top[idx].reshape(*labels_i_blob.shape)
+            top[idx].data[...] = labels_i_blob
+            idx += 1
 
     def backward(self, top, propagate_down, bottom):
         """This layer does not propagate gradients."""

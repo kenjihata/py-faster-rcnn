@@ -13,7 +13,7 @@ import cv2
 from fast_rcnn.config import cfg
 from utils.blob import prep_im_for_blob, im_list_to_blob
 
-def get_minibatch(roidb, num_classes, tree):
+def get_minibatch(roidb, num_classes):
     """Given a roidb, construct a minibatch sampled from it."""
     num_images = len(roidb)
     # Sample random scales to use for each image in this batch
@@ -30,7 +30,6 @@ def get_minibatch(roidb, num_classes, tree):
 
     blobs = {'data': im_blob}
 
-    routing_mapping_list = tree['routing_mapping_list']
 
     if cfg.TRAIN.HAS_RPN:
         assert len(im_scales) == 1, "Single batch only"
@@ -73,13 +72,6 @@ def get_minibatch(roidb, num_classes, tree):
 
         blobs['rois'] = rois_blob
         blobs['labels'] = labels_blob
-        for i, routing_map in enumerate(routing_mapping_list):
-            if not routing_map: continue
-            labels_i_blob = np.empty_like(labels_blob)
-            for index, value in ndenumerate(labels_i_blob):
-                labels_i_blob[index] = routing_map[value]
-
-            blobs['labels'+str(i)] = labels_i_blob
 
         if cfg.TRAIN.BBOX_REG:
             blobs['bbox_targets'] = bbox_targets_blob
