@@ -244,12 +244,18 @@ def im_detect_with_routing(net, im, tree, boxes=None):
         scores = net.blobs['cls_score'].data
     else:
         # use softmax estimated probabilities
-        scores = np.ones((len(tree['object_list']), 1))
-        for i, route_map in enumerate(tree['route_mapping_list']):
+        scores = np.ones((boxes.shape[0], len(tree['object_list'])))
+        for i, route_map in enumerate(tree['routing_mapping_list']):
             if not route_map: continue
             prob = blobs_out['cls_prob_' + str(i)]
-            for j in route_map:
-                scores[int(j)] *= prob[route_map[j]]
+            sc = net.blobs['cls_score_'+str(i)].data
+            fc7 = net.blobs['roi_pool_conv5'].data
+            print "PROB"+str(i), fc7
+            for k in xrange(prob.shape[0]):
+                for j in route_map:
+                    scores[k, int(j)] *= prob[k,route_map[j]]
+        print "PARAMS 0", net.params['cls_score_0'][0].data
+        print "PARAMS 1", net.params['cls_score_0'][1].data
 
 
     if cfg.TEST.BBOX_REG:

@@ -74,13 +74,16 @@ def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
-    im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
+    im_file = os.path.join(cfg.DATA_DIR, 'VisualGenome', 'VisualGenome2016', 'JPEGImages',  image_name)
     im = cv2.cvtColor(cv2.imread(im_file), cv2.COLOR_BGR2RGB)
 
     # Detect all object classes and regress object bounds
     timer = Timer()
     timer.tic()
-    scores, boxes = im_detect(net, im)
+    scores, boxes = im_detect_with_routing(net, im, tree)
+    print scores
+    print boxes
+    print
     timer.toc()
     print ('Detection took {:.3f}s for '
            '{:d} object proposals').format(timer.total_time, boxes.shape[0])
@@ -169,13 +172,9 @@ if __name__ == '__main__':
     im = 128 * np.ones((300, 500, 3), dtype=np.uint8)
     for i in xrange(2):
         _, _= im_detect_with_routing(net, im, tree)
-
-    im_names = [#'000456.jpg', '000542.jpg', '001150.jpg',
-                #'001763.jpg', '004545.jpg', 
-                '2350796.jpg', '2374454.jpg', '2346864.jpg',
-                '2356076.jpg', '1159449.jpg', '2349840.jpg', 
-                '2408794.jpg','1159568.jpg','1160228.jpg', 
-                '2316207.jpg']
+    with open(os.path.join(cfg.DATA_DIR, 'VisualGenome', 'VisualGenome2016', 'ImageSets', 'Main', 'test.txt')) as f:
+        im_names = [x.rstrip('\n')+'.jpg' for x in f.readlines()]
+    im_names = im_names[:10]
     for im_name in im_names:
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
         print 'Demo for data/demo/{}'.format(im_name)
