@@ -114,8 +114,9 @@ class ProposalTargetLayer(caffe.Layer):
             if not routing_map: continue
             labels_i_blob = np.empty_like(top[1].data)
             for index, value in np.ndenumerate(top[1].data):
-                if int(value) in routing_map:
-                    labels_i_blob[index] = routing_map[int(value)]
+                val = str(int(value))
+                if val in routing_map:
+                    labels_i_blob[index] = routing_map[val]
                 else:
                     labels_i_blob[index] = -1
 
