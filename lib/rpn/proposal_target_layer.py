@@ -75,7 +75,7 @@ class ProposalTargetLayer(caffe.Layer):
         # targets
         labels, rois, bbox_targets, bbox_inside_weights = _sample_rois(
             all_rois, gt_boxes, fg_rois_per_image,
-            rois_per_image, self._num_classes)
+            rois_per_image, self._num_classes, self.tree)
 
         if DEBUG:
             print 'num fg: {}'.format((labels > 0).sum())
@@ -133,7 +133,7 @@ class ProposalTargetLayer(caffe.Layer):
         pass
 
 
-def _get_bbox_regression_labels(bbox_target_data, num_classes):
+def _get_bbox_regression_labels(bbox_target_data, num_classes, tree):
     """Bounding-box regression targets (bbox_target_data) are stored in a
     compact form N x (class, tx, ty, tw, th)
 
@@ -151,10 +151,13 @@ def _get_bbox_regression_labels(bbox_target_data, num_classes):
     inds = np.where(clss > 0)[0]
     for ind in inds:
         cls = clss[ind]
-        start = 4 * cls
-        end = start + 4
-        bbox_targets[ind, start:end] = bbox_target_data[ind, 1:]
-        bbox_inside_weights[ind, start:end] = cfg.TRAIN.BBOX_INSIDE_WEIGHTS
+        for i, child_list in enumerate(tree['all_children_list']):
+            if cls in child_list:
+                start = 4 * i
+                end = start + 4
+                bbox_targets[ind, start:end] = bbox_target_data[ind, 1:]
+                bbox_inside_weights[ind, start:end] = cfg.TRAIN.BBOX_INSIDE_WEIGHTS
+
     return bbox_targets, bbox_inside_weights
 
 
@@ -173,7 +176,7 @@ def _compute_targets(ex_rois, gt_rois, labels):
     return np.hstack(
             (labels[:, np.newaxis], targets)).astype(np.float32, copy=False)
 
-def _sample_rois(all_rois, gt_boxes, fg_rois_per_image, rois_per_image, num_classes):
+def _sample_rois(all_rois, gt_boxes, fg_rois_per_image, rois_per_image, num_classes, tree):
     """Generate a random sample of RoIs comprising foreground and background
     examples.
     """
@@ -217,6 +220,6 @@ def _sample_rois(all_rois, gt_boxes, fg_rois_per_image, rois_per_image, num_clas
         rois[:, 1:5], gt_boxes[gt_assignment[keep_inds], :4], labels)
 
     bbox_targets, bbox_inside_weights = \
-        _get_bbox_regression_labels(bbox_target_data, num_classes)
+        _get_bbox_regression_labels(bbox_target_data, num_classes, tree)
 
     return labels, rois, bbox_targets, bbox_inside_weights

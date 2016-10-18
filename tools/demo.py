@@ -82,8 +82,6 @@ def demo(net, image_name):
     timer.tic()
     scores, boxes = im_detect_with_routing(net, im, tree)
     print scores
-    print boxes
-    print
     timer.toc()
     print ('Detection took {:.3f}s for '
            '{:d} object proposals').format(timer.total_time, boxes.shape[0])

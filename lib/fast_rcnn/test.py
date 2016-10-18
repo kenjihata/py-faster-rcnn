@@ -248,15 +248,9 @@ def im_detect_with_routing(net, im, tree, boxes=None):
         for i, route_map in enumerate(tree['routing_mapping_list']):
             if not route_map: continue
             prob = blobs_out['cls_prob_' + str(i)]
-            sc = net.blobs['cls_score_'+str(i)].data
-            fc7 = net.blobs['roi_pool_conv5'].data
-            print "PROB"+str(i), fc7
             for k in xrange(prob.shape[0]):
                 for j in route_map:
                     scores[k, int(j)] *= prob[k,route_map[j]]
-        print "PARAMS 0", net.params['cls_score_0'][0].data
-        print "PARAMS 1", net.params['cls_score_0'][1].data
-
 
     if cfg.TEST.BBOX_REG:
         # Apply bounding-box regression deltas
