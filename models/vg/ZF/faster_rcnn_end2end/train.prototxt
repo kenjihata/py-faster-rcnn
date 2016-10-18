@@ -382,7 +382,7 @@ layer {
   roi_pooling_param {
     pooled_h: 6
     pooled_w: 6
-    spatial_scale: 6
+    spatial_scale: 0.0625
   }
 }
 layer {
@@ -578,4 +578,3 @@ layer {
     normalize: true
   }
 }
-
