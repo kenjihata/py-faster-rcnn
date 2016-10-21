@@ -38,15 +38,17 @@ class ProposalTargetLayer(caffe.Layer):
         # bbox_outside_weights
         top[4].reshape(1, self._num_classes * 4)
         
-        with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
-            self.tree = json.load(f)
-        idx = 5
-        for i, route_map in enumerate(self.tree['immediate_children_list']):
-            children_len = len(route_map)
-            if children_len == 0: continue
-            top[idx].reshape(1, 1)
-            # self._name_to_top_map['labels_'+str(i)] = idx
-            idx += 1
+        if cfg.USE_HIERARCHY:
+            with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
+                self.tree = json.load(f)
+            idx = 5
+            for i, route_map in enumerate(self.tree['immediate_children_list']):
+                children_len = len(route_map)
+                if children_len == 0: continue
+                top[idx].reshape(1, 1)
+                idx += 1
+        else:
+            self.tree = None
 
     def forward(self, bottom, top):
         # Proposal ROIs (0, x1, y1, x2, y2) coming from RPN
@@ -107,22 +109,23 @@ class ProposalTargetLayer(caffe.Layer):
         top[4].reshape(*bbox_inside_weights.shape)
         top[4].data[...] = np.array(bbox_inside_weights > 0).astype(np.float32)
 
-        routing_mapping_list = self.tree['routing_mapping_list']
-        idx = 5
-        # each softmax route 
-        for i, routing_map in enumerate(routing_mapping_list):
-            if not routing_map: continue
-            labels_i_blob = np.empty_like(top[1].data)
-            for index, value in np.ndenumerate(top[1].data):
-                val = str(int(value))
-                if val in routing_map:
-                    labels_i_blob[index] = routing_map[val]
-                else:
-                    labels_i_blob[index] = -1
+        if cfg.USE_HIERARCHY:
+            routing_mapping_list = self.tree['routing_mapping_list']
+            idx = 5
+            # each softmax route 
+            for i, routing_map in enumerate(routing_mapping_list):
+                if not routing_map: continue
+                labels_i_blob = np.empty_like(top[1].data)
+                for index, value in np.ndenumerate(top[1].data):
+                    val = str(int(value))
+                    if val in routing_map:
+                        labels_i_blob[index] = routing_map[val]
+                    else:
+                        labels_i_blob[index] = -1
 
-            top[idx].reshape(*labels_i_blob.shape)
-            top[idx].data[...] = labels_i_blob
-            idx += 1
+                top[idx].reshape(*labels_i_blob.shape)
+                top[idx].data[...] = labels_i_blob
+                idx += 1
 
     def backward(self, top, propagate_down, bottom):
         """This layer does not propagate gradients."""
@@ -151,12 +154,18 @@ def _get_bbox_regression_labels(bbox_target_data, num_classes, tree):
     inds = np.where(clss > 0)[0]
     for ind in inds:
         cls = clss[ind]
-        for i, child_list in enumerate(tree['all_children_list']):
-            if cls in child_list:
-                start = 4 * i
-                end = start + 4
-                bbox_targets[ind, start:end] = bbox_target_data[ind, 1:]
-                bbox_inside_weights[ind, start:end] = cfg.TRAIN.BBOX_INSIDE_WEIGHTS
+        if cfg.USE_HIERARCHY:
+            for i, child_list in enumerate(tree['all_children_list']):
+                if cls in child_list:
+                    start = 4 * i
+                    end = start + 4
+                    bbox_targets[ind, start:end] = bbox_target_data[ind, 1:]
+                    bbox_inside_weights[ind, start:end] = cfg.TRAIN.BBOX_INSIDE_WEIGHTS
+        else:
+            start = 4 * cls
+            end = start + 4
+            bbox_targets[ind, start:end] = bbox_target_data[ind, 1:]
+            bbox_inside_weights[ind, start:end] = cfg.TRAIN.BBOX_INSIDE_WEIGHTS
 
     return bbox_targets, bbox_inside_weights
 
