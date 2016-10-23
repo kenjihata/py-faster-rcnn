@@ -38,6 +38,12 @@ for year in ['2016']:
         name = 'vg_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: vg(split, year))
 
+# Set up ImageNet Detection
+for year in ['2015']:
+    for split in ['train', 'val', 'test']:
+        name = 'imagenet_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year: imagenet(split, year))
+
 def get_imdb(name):
     """Get an imdb (image database) by name."""
     if not __sets.has_key(name):

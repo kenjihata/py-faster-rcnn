@@ -44,7 +44,7 @@ __C.TRAIN.MAX_SIZE = 1000
 __C.TRAIN.IMS_PER_BATCH = 2 
 
 # Minibatch size (number of regions of interest [ROIs])
-__C.TRAIN.BATCH_SIZE = 128
+__C.TRAIN.BATCH_SIZE = 32 
 
 # Fraction of minibatch that is labeled foreground (i.e. class > 0)
 __C.TRAIN.FG_FRACTION = 0.25
@@ -210,6 +210,8 @@ __C.USE_GPU_NMS = True
 # Default GPU device id
 __C.GPU_ID = 0
 
+# Tells whether we're using the hierarchy or not (False would be default Faster-RCNN)
+__C.USE_HIERARCHY = False
 
 def get_output_dir(imdb, net=None):
     """Return the directory where experimental artifacts are placed.

@@ -82,12 +82,14 @@ def demo(net, image_name):
     timer.tic()
     scores, boxes = im_detect_with_routing(net, im, tree)
     print scores
+    print 
+    print scores[0,:], '\n'
     timer.toc()
     print ('Detection took {:.3f}s for '
            '{:d} object proposals').format(timer.total_time, boxes.shape[0])
 
     # Visualize detections for each class
-    CONF_THRESH = 0.3
+    CONF_THRESH = 0.6
     NMS_THRESH = 0.3
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.imshow(im, aspect='equal')
@@ -172,7 +174,7 @@ if __name__ == '__main__':
         _, _= im_detect_with_routing(net, im, tree)
     with open(os.path.join(cfg.DATA_DIR, 'VisualGenome', 'VisualGenome2016', 'ImageSets', 'Main', 'test.txt')) as f:
         im_names = [x.rstrip('\n')+'.jpg' for x in f.readlines()]
-    im_names = im_names[:10]
+    im_names = im_names[:20]
     for im_name in im_names:
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
         print 'Demo for data/demo/{}'.format(im_name)
