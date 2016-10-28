@@ -29,11 +29,15 @@ class imagenet(imdb):
         self._devkit_path = self._get_default_path() if devkit_path is None \
                 else devkit_path
         self._data_path = os.path.join(self._devkit_path, 'ILSVRC' + self._year)
-        with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
-            tree = json.load(f)
-        self._classes = tuple(tree['object_list'])
+        if cfg.USE_HIERARCHY:
+            with open(os.path.join(cfg.CACHE_DIR, 'tree.json')) as f:
+                tree = json.load(f)
+            self._classes = tuple(tree['object_list'])
+        else:
+            with open(os.path.join(cfg.CACHE_DIR, 'object_classes.json')) as f:
+                self._classes = tuple(json.load(f))
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
-        self._image_ext = '.jpg'
+        self._image_ext = '.JPEG'
         self._image_index = self._load_image_set_index()
         # Default to roidb handler
         self._roidb_handler = self.selective_search_roidb
@@ -63,7 +67,7 @@ class imagenet(imdb):
         """
         Construct an image path from the image's "index" identifier.
         """
-        image_path = os.path.join(self._data_path, 'JPEGImages',
+        image_path = os.path.join(self._data_path, 'Data', 'DET',self._image_set,
                                   index + self._image_ext)
         assert os.path.exists(image_path), \
                 'Path does not exist: {}'.format(image_path)
@@ -75,12 +79,12 @@ class imagenet(imdb):
         """
         # Example path to image set file:
         # self._devkit_path + /VisualGenome/VisualGenome2016/ImageSets/Main/val.txt
-        image_set_file = os.path.join(self._data_path, 'ImageSets', 'Main',
+        image_set_file = os.path.join(self._data_path, 'ImageSets', 'DET',
                                       self._image_set + '.txt')
         assert os.path.exists(image_set_file), \
                 'Path does not exist: {}'.format(image_set_file)
         with open(image_set_file) as f:
-            image_index = [x.strip() for x in f.readlines()]
+            image_index = [x.split()[0] for x in f.readlines() if 'extra' not in x]
         return image_index
 
     def _get_default_path(self):
@@ -104,6 +108,10 @@ class imagenet(imdb):
 
         gt_roidb = [self._load_pascal_annotation(index)
                     for index in self.image_index]
+        print "ORIG LEN:", len(gt_roidb)
+
+        gt_roidb = [x for x in gt_roidb if len(x['boxes']) > 0]
+        print "NEW LEN:", len(gt_roidb)
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
@@ -181,17 +189,9 @@ class imagenet(imdb):
         Load image and bounding boxes info from XML file in the PASCAL VOC
         format.
         """
-        filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
+        filename = os.path.join(self._data_path, 'Annotations','DET',self._image_set, index + '.xml')
         tree = ET.parse(filename)
         objs = tree.findall('object')
-        if not self.config['use_diff']:
-            # Exclude the samples labeled as difficult
-            non_diff_objs = [
-                obj for obj in objs if int(obj.find('difficult').text) == 0]
-            # if len(non_diff_objs) != len(objs):
-            #     print 'Removed {} difficult objects'.format(
-            #         len(objs) - len(non_diff_objs))
-            objs = non_diff_objs
         num_objs = len(objs)
 
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
@@ -206,8 +206,8 @@ class imagenet(imdb):
             # Make pixel indexes 0-based
             x1 = float(bbox.find('xmin').text) - 1
             y1 = float(bbox.find('ymin').text) - 1
-            x2 = float(bbox.find('xmax').text) - 1
-            y2 = float(bbox.find('ymax').text) - 1
+            x2 = max(x1+1,float(bbox.find('xmax').text) - 1)
+            y2 = max(y1+1,float(bbox.find('ymax').text) - 1)
             cls = self._class_to_ind[obj.find('name').text.lower().strip()]
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls

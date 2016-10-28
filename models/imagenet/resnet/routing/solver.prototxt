@@ -1,9 +1,9 @@
-train_net: "models/vg/ZF/faster_rcnn_end2end/train.prototxt"
+train_net: "models/imagenet/resnet/routing/train.prototxt"
 
 base_lr: 0.001
 lr_policy: "step"
 gamma: 0.1
-stepsize: 50000
+stepsize: 250000
 display: 100
 average_loss: 100
 momentum: 0.9
@@ -13,5 +13,5 @@ weight_decay: 0.0005
 # function
 snapshot: 0
 # We still use the snapshot prefix, though
-snapshot_prefix: "zf_faster_rcnn_e-3"
+snapshot_prefix: "imagenet_routing_resnet"
 iter_size: 2

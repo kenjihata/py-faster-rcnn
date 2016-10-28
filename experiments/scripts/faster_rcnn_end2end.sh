@@ -47,6 +47,15 @@ case $DATASET in
     PT_DIR="vg"
     ITERS=490000
     ;;
+  imagenet)
+    # This is a very long and slow training schedule
+    # You can probably use fewer iterations and reduce the
+    # time to the LR drop (set in the solver to 350,000 iterations).
+    TRAIN_IMDB="imagenet_2015_train"
+    TEST_IMDB="imagenet_2015_test"
+    PT_DIR="imagenet"
+    ITERS=490000
+    ;;
   *)
     echo "No dataset given"
     exit
