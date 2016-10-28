@@ -211,7 +211,7 @@ __C.USE_GPU_NMS = True
 __C.GPU_ID = 0
 
 # Tells whether we're using the hierarchy or not (False would be default Faster-RCNN)
-__C.USE_HIERARCHY = False
+__C.USE_HIERARCHY = True
 
 def get_output_dir(imdb, net=None):
     """Return the directory where experimental artifacts are placed.
