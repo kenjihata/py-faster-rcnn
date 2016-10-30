@@ -1,0 +1,5280 @@
+layer {
+  name: "input-data"
+  type: "Python"
+  top: "data"
+  top: "im_info"
+  top: "gt_boxes"
+  python_param {
+    module: "roi_data_layer.layer"
+    layer: "RoIDataLayer"
+    param_str: "\'num_classes\': 296"
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 96
+    pad: 3
+    kernel_size: 7
+    stride: 2
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 3
+    alpha: 5e-05
+    beta: 0.75
+    norm_region: WITHIN_CHANNEL
+    engine: CAFFE
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "norm1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 1
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    stride: 2
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "conv2"
+  top: "norm2"
+  lrn_param {
+    local_size: 3
+    alpha: 5e-05
+    beta: 0.75
+    norm_region: WITHIN_CHANNEL
+    engine: CAFFE
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "norm2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 1
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    stride: 1
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    stride: 1
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    stride: 1
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "rpn_conv/3x3"
+  type: "Convolution"
+  bottom: "conv5"
+  top: "rpn_conv/3x3"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "rpn_relu/3x3"
+  type: "ReLU"
+  bottom: "rpn_conv/3x3"
+  top: "rpn_conv/3x3"
+}
+layer {
+  name: "rpn_cls_score"
+  type: "Convolution"
+  bottom: "rpn_conv/3x3"
+  top: "rpn_cls_score"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 18
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "rpn_bbox_pred"
+  type: "Convolution"
+  bottom: "rpn_conv/3x3"
+  top: "rpn_bbox_pred"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 36
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "rpn_cls_score_reshape"
+  type: "Reshape"
+  bottom: "rpn_cls_score"
+  top: "rpn_cls_score_reshape"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: 2
+      dim: -1
+      dim: 0
+    }
+  }
+}
+layer {
+  name: "rpn_labels"
+  type: "Python"
+  bottom: "rpn_cls_score"
+  bottom: "gt_boxes"
+  bottom: "im_info"
+  bottom: "data"
+  top: "rpn_labels"
+  top: "rpn_bbox_targets"
+  top: "rpn_bbox_inside_weights"
+  top: "rpn_bbox_outside_weights"
+  python_param {
+    module: "rpn.anchor_target_layer"
+    layer: "AnchorTargetLayer"
+    param_str: "feat_stride: 16"
+  }
+}
+layer {
+  name: "rpn_loss_cls"
+  type: "SoftmaxWithLoss"
+  bottom: "rpn_cls_score_reshape"
+  bottom: "rpn_labels"
+  top: "rpn_loss_cls"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "rpn_loss_bbox"
+  type: "SmoothL1Loss"
+  bottom: "rpn_bbox_pred"
+  bottom: "rpn_bbox_targets"
+  bottom: "rpn_bbox_inside_weights"
+  bottom: "rpn_bbox_outside_weights"
+  top: "rpn_loss_bbox"
+  loss_weight: 1
+  smooth_l1_loss_param {
+    sigma: 3.0
+  }
+}
+layer {
+  name: "rpn_cls_prob"
+  type: "Softmax"
+  bottom: "rpn_cls_score_reshape"
+  top: "rpn_cls_prob"
+}
+layer {
+  name: "rpn_cls_prob_reshape"
+  type: "Reshape"
+  bottom: "rpn_cls_prob"
+  top: "rpn_cls_prob_reshape"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: 18
+      dim: -1
+      dim: 0
+    }
+  }
+}
+layer {
+  name: "proposal"
+  type: "Python"
+  bottom: "rpn_cls_prob_reshape"
+  bottom: "rpn_bbox_pred"
+  bottom: "im_info"
+  top: "rpn_rois"
+  python_param {
+    module: "rpn.proposal_layer"
+    layer: "ProposalLayer"
+    param_str: "\'feat_stride\': 16"
+  }
+}
+layer {
+  name: "roi-data"
+  type: "Python"
+  bottom: "rpn_rois"
+  bottom: "gt_boxes"
+  top: "rois"
+  top: "labels"
+  top: "bbox_targets"
+  top: "bbox_inside_weights"
+  top: "bbox_outside_weights"
+  top: "labels_0"
+  top: "labels_1"
+  top: "labels_2"
+  top: "labels_4"
+  top: "labels_5"
+  top: "labels_6"
+  top: "labels_7"
+  top: "labels_8"
+  top: "labels_9"
+  top: "labels_12"
+  top: "labels_13"
+  top: "labels_14"
+  top: "labels_15"
+  top: "labels_16"
+  top: "labels_17"
+  top: "labels_18"
+  top: "labels_19"
+  top: "labels_20"
+  top: "labels_21"
+  top: "labels_22"
+  top: "labels_23"
+  top: "labels_24"
+  top: "labels_25"
+  top: "labels_26"
+  top: "labels_27"
+  top: "labels_28"
+  top: "labels_31"
+  top: "labels_33"
+  top: "labels_35"
+  top: "labels_36"
+  top: "labels_37"
+  top: "labels_39"
+  top: "labels_40"
+  top: "labels_45"
+  top: "labels_47"
+  top: "labels_48"
+  top: "labels_49"
+  top: "labels_50"
+  top: "labels_53"
+  top: "labels_58"
+  top: "labels_59"
+  top: "labels_63"
+  top: "labels_65"
+  top: "labels_68"
+  top: "labels_76"
+  top: "labels_78"
+  top: "labels_79"
+  top: "labels_80"
+  top: "labels_81"
+  top: "labels_82"
+  top: "labels_86"
+  top: "labels_91"
+  top: "labels_96"
+  top: "labels_103"
+  top: "labels_111"
+  top: "labels_113"
+  top: "labels_116"
+  top: "labels_117"
+  top: "labels_119"
+  top: "labels_120"
+  top: "labels_122"
+  top: "labels_125"
+  top: "labels_127"
+  top: "labels_131"
+  top: "labels_132"
+  top: "labels_140"
+  top: "labels_148"
+  top: "labels_149"
+  top: "labels_150"
+  top: "labels_151"
+  top: "labels_152"
+  top: "labels_155"
+  top: "labels_158"
+  top: "labels_159"
+  top: "labels_170"
+  top: "labels_173"
+  top: "labels_184"
+  top: "labels_186"
+  top: "labels_187"
+  top: "labels_188"
+  top: "labels_199"
+  top: "labels_215"
+  top: "labels_222"
+  top: "labels_224"
+  top: "labels_226"
+  top: "labels_238"
+  top: "labels_251"
+  top: "labels_252"
+  top: "labels_253"
+  top: "labels_254"
+  top: "labels_255"
+  top: "labels_256"
+  top: "labels_268"
+  top: "labels_270"
+  top: "labels_275"
+  top: "labels_278"
+  python_param {
+    module: "rpn.proposal_target_layer"
+    layer: "ProposalTargetLayer"
+    param_str: "\'num_classes\': 296"
+  }
+}
+layer {
+  name: "roi_pool_conv5"
+  type: "ROIPooling"
+  bottom: "conv5"
+  bottom: "rois"
+  top: "roi_pool_conv5"
+  roi_pooling_param {
+    pooled_h: 6
+    pooled_w: 6
+    spatial_scale: 0.0625
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "roi_pool_conv5"
+  top: "fc6"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6"
+  top: "fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+    scale_train: false
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7"
+  top: "fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+    scale_train: false
+  }
+}
+layer {
+  name: "bbox_pred"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "bbox_pred"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 1184
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "loss_bbox"
+  type: "SmoothL1Loss"
+  bottom: "bbox_pred"
+  bottom: "bbox_targets"
+  bottom: "bbox_inside_weights"
+  bottom: "bbox_outside_weights"
+  top: "bbox_loss"
+  loss_weight: 1
+}
+layer {
+  name: "cls_score_0"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_0"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_0"
+  type: "Python"
+  bottom: "cls_score_0"
+  bottom: "labels"
+  top: "routing_0"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 0"
+  }
+}
+layer {
+  name: "loss_cls_0"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_0"
+  bottom: "labels_0"
+  top: "cls_loss_0"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_1"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_1"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_1"
+  type: "Python"
+  bottom: "cls_score_1"
+  bottom: "labels"
+  top: "routing_1"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 1"
+  }
+}
+layer {
+  name: "loss_cls_1"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_1"
+  bottom: "labels_1"
+  top: "cls_loss_1"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_2"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_2"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_2"
+  type: "Python"
+  bottom: "cls_score_2"
+  bottom: "labels"
+  top: "routing_2"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 2"
+  }
+}
+layer {
+  name: "loss_cls_2"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_2"
+  bottom: "labels_2"
+  top: "cls_loss_2"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_4"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_4"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_4"
+  type: "Python"
+  bottom: "cls_score_4"
+  bottom: "labels"
+  top: "routing_4"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 4"
+  }
+}
+layer {
+  name: "loss_cls_4"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_4"
+  bottom: "labels_4"
+  top: "cls_loss_4"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_5"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_5"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_5"
+  type: "Python"
+  bottom: "cls_score_5"
+  bottom: "labels"
+  top: "routing_5"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 5"
+  }
+}
+layer {
+  name: "loss_cls_5"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_5"
+  bottom: "labels_5"
+  top: "cls_loss_5"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_6"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_6"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_6"
+  type: "Python"
+  bottom: "cls_score_6"
+  bottom: "labels"
+  top: "routing_6"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 6"
+  }
+}
+layer {
+  name: "loss_cls_6"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_6"
+  bottom: "labels_6"
+  top: "cls_loss_6"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_7"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_7"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_7"
+  type: "Python"
+  bottom: "cls_score_7"
+  bottom: "labels"
+  top: "routing_7"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 7"
+  }
+}
+layer {
+  name: "loss_cls_7"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_7"
+  bottom: "labels_7"
+  top: "cls_loss_7"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_8"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_8"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_8"
+  type: "Python"
+  bottom: "cls_score_8"
+  bottom: "labels"
+  top: "routing_8"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 8"
+  }
+}
+layer {
+  name: "loss_cls_8"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_8"
+  bottom: "labels_8"
+  top: "cls_loss_8"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_9"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_9"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_9"
+  type: "Python"
+  bottom: "cls_score_9"
+  bottom: "labels"
+  top: "routing_9"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 9"
+  }
+}
+layer {
+  name: "loss_cls_9"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_9"
+  bottom: "labels_9"
+  top: "cls_loss_9"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_12"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_12"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_12"
+  type: "Python"
+  bottom: "cls_score_12"
+  bottom: "labels"
+  top: "routing_12"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 12"
+  }
+}
+layer {
+  name: "loss_cls_12"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_12"
+  bottom: "labels_12"
+  top: "cls_loss_12"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_13"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_13"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 7
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_13"
+  type: "Python"
+  bottom: "cls_score_13"
+  bottom: "labels"
+  top: "routing_13"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 13"
+  }
+}
+layer {
+  name: "loss_cls_13"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_13"
+  bottom: "labels_13"
+  top: "cls_loss_13"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_14"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_14"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_14"
+  type: "Python"
+  bottom: "cls_score_14"
+  bottom: "labels"
+  top: "routing_14"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 14"
+  }
+}
+layer {
+  name: "loss_cls_14"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_14"
+  bottom: "labels_14"
+  top: "cls_loss_14"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_15"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_15"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_15"
+  type: "Python"
+  bottom: "cls_score_15"
+  bottom: "labels"
+  top: "routing_15"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 15"
+  }
+}
+layer {
+  name: "loss_cls_15"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_15"
+  bottom: "labels_15"
+  top: "cls_loss_15"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_16"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_16"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_16"
+  type: "Python"
+  bottom: "cls_score_16"
+  bottom: "labels"
+  top: "routing_16"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 16"
+  }
+}
+layer {
+  name: "loss_cls_16"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_16"
+  bottom: "labels_16"
+  top: "cls_loss_16"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_17"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_17"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_17"
+  type: "Python"
+  bottom: "cls_score_17"
+  bottom: "labels"
+  top: "routing_17"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 17"
+  }
+}
+layer {
+  name: "loss_cls_17"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_17"
+  bottom: "labels_17"
+  top: "cls_loss_17"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_18"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_18"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_18"
+  type: "Python"
+  bottom: "cls_score_18"
+  bottom: "labels"
+  top: "routing_18"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 18"
+  }
+}
+layer {
+  name: "loss_cls_18"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_18"
+  bottom: "labels_18"
+  top: "cls_loss_18"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_19"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_19"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_19"
+  type: "Python"
+  bottom: "cls_score_19"
+  bottom: "labels"
+  top: "routing_19"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 19"
+  }
+}
+layer {
+  name: "loss_cls_19"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_19"
+  bottom: "labels_19"
+  top: "cls_loss_19"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_20"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_20"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_20"
+  type: "Python"
+  bottom: "cls_score_20"
+  bottom: "labels"
+  top: "routing_20"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 20"
+  }
+}
+layer {
+  name: "loss_cls_20"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_20"
+  bottom: "labels_20"
+  top: "cls_loss_20"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_21"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_21"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_21"
+  type: "Python"
+  bottom: "cls_score_21"
+  bottom: "labels"
+  top: "routing_21"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 21"
+  }
+}
+layer {
+  name: "loss_cls_21"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_21"
+  bottom: "labels_21"
+  top: "cls_loss_21"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_22"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_22"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 6
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_22"
+  type: "Python"
+  bottom: "cls_score_22"
+  bottom: "labels"
+  top: "routing_22"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 22"
+  }
+}
+layer {
+  name: "loss_cls_22"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_22"
+  bottom: "labels_22"
+  top: "cls_loss_22"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_23"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_23"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 8
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_23"
+  type: "Python"
+  bottom: "cls_score_23"
+  bottom: "labels"
+  top: "routing_23"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 23"
+  }
+}
+layer {
+  name: "loss_cls_23"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_23"
+  bottom: "labels_23"
+  top: "cls_loss_23"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_24"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_24"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 13
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_24"
+  type: "Python"
+  bottom: "cls_score_24"
+  bottom: "labels"
+  top: "routing_24"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 24"
+  }
+}
+layer {
+  name: "loss_cls_24"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_24"
+  bottom: "labels_24"
+  top: "cls_loss_24"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_25"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_25"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_25"
+  type: "Python"
+  bottom: "cls_score_25"
+  bottom: "labels"
+  top: "routing_25"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 25"
+  }
+}
+layer {
+  name: "loss_cls_25"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_25"
+  bottom: "labels_25"
+  top: "cls_loss_25"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_26"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_26"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_26"
+  type: "Python"
+  bottom: "cls_score_26"
+  bottom: "labels"
+  top: "routing_26"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 26"
+  }
+}
+layer {
+  name: "loss_cls_26"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_26"
+  bottom: "labels_26"
+  top: "cls_loss_26"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_27"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_27"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_27"
+  type: "Python"
+  bottom: "cls_score_27"
+  bottom: "labels"
+  top: "routing_27"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 27"
+  }
+}
+layer {
+  name: "loss_cls_27"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_27"
+  bottom: "labels_27"
+  top: "cls_loss_27"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_28"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_28"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 6
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_28"
+  type: "Python"
+  bottom: "cls_score_28"
+  bottom: "labels"
+  top: "routing_28"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 28"
+  }
+}
+layer {
+  name: "loss_cls_28"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_28"
+  bottom: "labels_28"
+  top: "cls_loss_28"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_31"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_31"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_31"
+  type: "Python"
+  bottom: "cls_score_31"
+  bottom: "labels"
+  top: "routing_31"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 31"
+  }
+}
+layer {
+  name: "loss_cls_31"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_31"
+  bottom: "labels_31"
+  top: "cls_loss_31"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_33"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_33"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_33"
+  type: "Python"
+  bottom: "cls_score_33"
+  bottom: "labels"
+  top: "routing_33"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 33"
+  }
+}
+layer {
+  name: "loss_cls_33"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_33"
+  bottom: "labels_33"
+  top: "cls_loss_33"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_35"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_35"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 7
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_35"
+  type: "Python"
+  bottom: "cls_score_35"
+  bottom: "labels"
+  top: "routing_35"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 35"
+  }
+}
+layer {
+  name: "loss_cls_35"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_35"
+  bottom: "labels_35"
+  top: "cls_loss_35"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_36"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_36"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_36"
+  type: "Python"
+  bottom: "cls_score_36"
+  bottom: "labels"
+  top: "routing_36"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 36"
+  }
+}
+layer {
+  name: "loss_cls_36"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_36"
+  bottom: "labels_36"
+  top: "cls_loss_36"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_37"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_37"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_37"
+  type: "Python"
+  bottom: "cls_score_37"
+  bottom: "labels"
+  top: "routing_37"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 37"
+  }
+}
+layer {
+  name: "loss_cls_37"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_37"
+  bottom: "labels_37"
+  top: "cls_loss_37"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_39"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_39"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_39"
+  type: "Python"
+  bottom: "cls_score_39"
+  bottom: "labels"
+  top: "routing_39"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 39"
+  }
+}
+layer {
+  name: "loss_cls_39"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_39"
+  bottom: "labels_39"
+  top: "cls_loss_39"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_40"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_40"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_40"
+  type: "Python"
+  bottom: "cls_score_40"
+  bottom: "labels"
+  top: "routing_40"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 40"
+  }
+}
+layer {
+  name: "loss_cls_40"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_40"
+  bottom: "labels_40"
+  top: "cls_loss_40"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_45"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_45"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_45"
+  type: "Python"
+  bottom: "cls_score_45"
+  bottom: "labels"
+  top: "routing_45"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 45"
+  }
+}
+layer {
+  name: "loss_cls_45"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_45"
+  bottom: "labels_45"
+  top: "cls_loss_45"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_47"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_47"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_47"
+  type: "Python"
+  bottom: "cls_score_47"
+  bottom: "labels"
+  top: "routing_47"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 47"
+  }
+}
+layer {
+  name: "loss_cls_47"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_47"
+  bottom: "labels_47"
+  top: "cls_loss_47"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_48"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_48"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_48"
+  type: "Python"
+  bottom: "cls_score_48"
+  bottom: "labels"
+  top: "routing_48"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 48"
+  }
+}
+layer {
+  name: "loss_cls_48"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_48"
+  bottom: "labels_48"
+  top: "cls_loss_48"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_49"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_49"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_49"
+  type: "Python"
+  bottom: "cls_score_49"
+  bottom: "labels"
+  top: "routing_49"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 49"
+  }
+}
+layer {
+  name: "loss_cls_49"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_49"
+  bottom: "labels_49"
+  top: "cls_loss_49"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_50"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_50"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_50"
+  type: "Python"
+  bottom: "cls_score_50"
+  bottom: "labels"
+  top: "routing_50"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 50"
+  }
+}
+layer {
+  name: "loss_cls_50"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_50"
+  bottom: "labels_50"
+  top: "cls_loss_50"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_53"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_53"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_53"
+  type: "Python"
+  bottom: "cls_score_53"
+  bottom: "labels"
+  top: "routing_53"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 53"
+  }
+}
+layer {
+  name: "loss_cls_53"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_53"
+  bottom: "labels_53"
+  top: "cls_loss_53"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_58"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_58"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_58"
+  type: "Python"
+  bottom: "cls_score_58"
+  bottom: "labels"
+  top: "routing_58"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 58"
+  }
+}
+layer {
+  name: "loss_cls_58"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_58"
+  bottom: "labels_58"
+  top: "cls_loss_58"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_59"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_59"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_59"
+  type: "Python"
+  bottom: "cls_score_59"
+  bottom: "labels"
+  top: "routing_59"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 59"
+  }
+}
+layer {
+  name: "loss_cls_59"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_59"
+  bottom: "labels_59"
+  top: "cls_loss_59"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_63"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_63"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_63"
+  type: "Python"
+  bottom: "cls_score_63"
+  bottom: "labels"
+  top: "routing_63"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 63"
+  }
+}
+layer {
+  name: "loss_cls_63"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_63"
+  bottom: "labels_63"
+  top: "cls_loss_63"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_65"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_65"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_65"
+  type: "Python"
+  bottom: "cls_score_65"
+  bottom: "labels"
+  top: "routing_65"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 65"
+  }
+}
+layer {
+  name: "loss_cls_65"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_65"
+  bottom: "labels_65"
+  top: "cls_loss_65"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_68"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_68"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_68"
+  type: "Python"
+  bottom: "cls_score_68"
+  bottom: "labels"
+  top: "routing_68"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 68"
+  }
+}
+layer {
+  name: "loss_cls_68"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_68"
+  bottom: "labels_68"
+  top: "cls_loss_68"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_76"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_76"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_76"
+  type: "Python"
+  bottom: "cls_score_76"
+  bottom: "labels"
+  top: "routing_76"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 76"
+  }
+}
+layer {
+  name: "loss_cls_76"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_76"
+  bottom: "labels_76"
+  top: "cls_loss_76"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_78"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_78"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_78"
+  type: "Python"
+  bottom: "cls_score_78"
+  bottom: "labels"
+  top: "routing_78"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 78"
+  }
+}
+layer {
+  name: "loss_cls_78"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_78"
+  bottom: "labels_78"
+  top: "cls_loss_78"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_79"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_79"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_79"
+  type: "Python"
+  bottom: "cls_score_79"
+  bottom: "labels"
+  top: "routing_79"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 79"
+  }
+}
+layer {
+  name: "loss_cls_79"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_79"
+  bottom: "labels_79"
+  top: "cls_loss_79"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_80"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_80"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_80"
+  type: "Python"
+  bottom: "cls_score_80"
+  bottom: "labels"
+  top: "routing_80"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 80"
+  }
+}
+layer {
+  name: "loss_cls_80"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_80"
+  bottom: "labels_80"
+  top: "cls_loss_80"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_81"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_81"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_81"
+  type: "Python"
+  bottom: "cls_score_81"
+  bottom: "labels"
+  top: "routing_81"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 81"
+  }
+}
+layer {
+  name: "loss_cls_81"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_81"
+  bottom: "labels_81"
+  top: "cls_loss_81"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_82"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_82"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_82"
+  type: "Python"
+  bottom: "cls_score_82"
+  bottom: "labels"
+  top: "routing_82"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 82"
+  }
+}
+layer {
+  name: "loss_cls_82"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_82"
+  bottom: "labels_82"
+  top: "cls_loss_82"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_86"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_86"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_86"
+  type: "Python"
+  bottom: "cls_score_86"
+  bottom: "labels"
+  top: "routing_86"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 86"
+  }
+}
+layer {
+  name: "loss_cls_86"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_86"
+  bottom: "labels_86"
+  top: "cls_loss_86"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_91"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_91"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_91"
+  type: "Python"
+  bottom: "cls_score_91"
+  bottom: "labels"
+  top: "routing_91"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 91"
+  }
+}
+layer {
+  name: "loss_cls_91"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_91"
+  bottom: "labels_91"
+  top: "cls_loss_91"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_96"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_96"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_96"
+  type: "Python"
+  bottom: "cls_score_96"
+  bottom: "labels"
+  top: "routing_96"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 96"
+  }
+}
+layer {
+  name: "loss_cls_96"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_96"
+  bottom: "labels_96"
+  top: "cls_loss_96"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_103"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_103"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_103"
+  type: "Python"
+  bottom: "cls_score_103"
+  bottom: "labels"
+  top: "routing_103"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 103"
+  }
+}
+layer {
+  name: "loss_cls_103"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_103"
+  bottom: "labels_103"
+  top: "cls_loss_103"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_111"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_111"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 8
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_111"
+  type: "Python"
+  bottom: "cls_score_111"
+  bottom: "labels"
+  top: "routing_111"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 111"
+  }
+}
+layer {
+  name: "loss_cls_111"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_111"
+  bottom: "labels_111"
+  top: "cls_loss_111"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_113"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_113"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_113"
+  type: "Python"
+  bottom: "cls_score_113"
+  bottom: "labels"
+  top: "routing_113"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 113"
+  }
+}
+layer {
+  name: "loss_cls_113"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_113"
+  bottom: "labels_113"
+  top: "cls_loss_113"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_116"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_116"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_116"
+  type: "Python"
+  bottom: "cls_score_116"
+  bottom: "labels"
+  top: "routing_116"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 116"
+  }
+}
+layer {
+  name: "loss_cls_116"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_116"
+  bottom: "labels_116"
+  top: "cls_loss_116"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_117"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_117"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_117"
+  type: "Python"
+  bottom: "cls_score_117"
+  bottom: "labels"
+  top: "routing_117"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 117"
+  }
+}
+layer {
+  name: "loss_cls_117"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_117"
+  bottom: "labels_117"
+  top: "cls_loss_117"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_119"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_119"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_119"
+  type: "Python"
+  bottom: "cls_score_119"
+  bottom: "labels"
+  top: "routing_119"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 119"
+  }
+}
+layer {
+  name: "loss_cls_119"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_119"
+  bottom: "labels_119"
+  top: "cls_loss_119"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_120"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_120"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_120"
+  type: "Python"
+  bottom: "cls_score_120"
+  bottom: "labels"
+  top: "routing_120"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 120"
+  }
+}
+layer {
+  name: "loss_cls_120"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_120"
+  bottom: "labels_120"
+  top: "cls_loss_120"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_122"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_122"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_122"
+  type: "Python"
+  bottom: "cls_score_122"
+  bottom: "labels"
+  top: "routing_122"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 122"
+  }
+}
+layer {
+  name: "loss_cls_122"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_122"
+  bottom: "labels_122"
+  top: "cls_loss_122"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_125"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_125"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_125"
+  type: "Python"
+  bottom: "cls_score_125"
+  bottom: "labels"
+  top: "routing_125"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 125"
+  }
+}
+layer {
+  name: "loss_cls_125"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_125"
+  bottom: "labels_125"
+  top: "cls_loss_125"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_127"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_127"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_127"
+  type: "Python"
+  bottom: "cls_score_127"
+  bottom: "labels"
+  top: "routing_127"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 127"
+  }
+}
+layer {
+  name: "loss_cls_127"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_127"
+  bottom: "labels_127"
+  top: "cls_loss_127"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_131"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_131"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_131"
+  type: "Python"
+  bottom: "cls_score_131"
+  bottom: "labels"
+  top: "routing_131"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 131"
+  }
+}
+layer {
+  name: "loss_cls_131"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_131"
+  bottom: "labels_131"
+  top: "cls_loss_131"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_132"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_132"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_132"
+  type: "Python"
+  bottom: "cls_score_132"
+  bottom: "labels"
+  top: "routing_132"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 132"
+  }
+}
+layer {
+  name: "loss_cls_132"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_132"
+  bottom: "labels_132"
+  top: "cls_loss_132"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_140"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_140"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_140"
+  type: "Python"
+  bottom: "cls_score_140"
+  bottom: "labels"
+  top: "routing_140"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 140"
+  }
+}
+layer {
+  name: "loss_cls_140"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_140"
+  bottom: "labels_140"
+  top: "cls_loss_140"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_148"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_148"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_148"
+  type: "Python"
+  bottom: "cls_score_148"
+  bottom: "labels"
+  top: "routing_148"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 148"
+  }
+}
+layer {
+  name: "loss_cls_148"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_148"
+  bottom: "labels_148"
+  top: "cls_loss_148"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_149"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_149"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_149"
+  type: "Python"
+  bottom: "cls_score_149"
+  bottom: "labels"
+  top: "routing_149"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 149"
+  }
+}
+layer {
+  name: "loss_cls_149"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_149"
+  bottom: "labels_149"
+  top: "cls_loss_149"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_150"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_150"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_150"
+  type: "Python"
+  bottom: "cls_score_150"
+  bottom: "labels"
+  top: "routing_150"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 150"
+  }
+}
+layer {
+  name: "loss_cls_150"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_150"
+  bottom: "labels_150"
+  top: "cls_loss_150"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_151"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_151"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_151"
+  type: "Python"
+  bottom: "cls_score_151"
+  bottom: "labels"
+  top: "routing_151"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 151"
+  }
+}
+layer {
+  name: "loss_cls_151"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_151"
+  bottom: "labels_151"
+  top: "cls_loss_151"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_152"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_152"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_152"
+  type: "Python"
+  bottom: "cls_score_152"
+  bottom: "labels"
+  top: "routing_152"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 152"
+  }
+}
+layer {
+  name: "loss_cls_152"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_152"
+  bottom: "labels_152"
+  top: "cls_loss_152"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_155"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_155"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_155"
+  type: "Python"
+  bottom: "cls_score_155"
+  bottom: "labels"
+  top: "routing_155"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 155"
+  }
+}
+layer {
+  name: "loss_cls_155"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_155"
+  bottom: "labels_155"
+  top: "cls_loss_155"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_158"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_158"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_158"
+  type: "Python"
+  bottom: "cls_score_158"
+  bottom: "labels"
+  top: "routing_158"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 158"
+  }
+}
+layer {
+  name: "loss_cls_158"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_158"
+  bottom: "labels_158"
+  top: "cls_loss_158"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_159"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_159"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_159"
+  type: "Python"
+  bottom: "cls_score_159"
+  bottom: "labels"
+  top: "routing_159"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 159"
+  }
+}
+layer {
+  name: "loss_cls_159"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_159"
+  bottom: "labels_159"
+  top: "cls_loss_159"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_170"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_170"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_170"
+  type: "Python"
+  bottom: "cls_score_170"
+  bottom: "labels"
+  top: "routing_170"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 170"
+  }
+}
+layer {
+  name: "loss_cls_170"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_170"
+  bottom: "labels_170"
+  top: "cls_loss_170"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_173"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_173"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_173"
+  type: "Python"
+  bottom: "cls_score_173"
+  bottom: "labels"
+  top: "routing_173"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 173"
+  }
+}
+layer {
+  name: "loss_cls_173"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_173"
+  bottom: "labels_173"
+  top: "cls_loss_173"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_184"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_184"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_184"
+  type: "Python"
+  bottom: "cls_score_184"
+  bottom: "labels"
+  top: "routing_184"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 184"
+  }
+}
+layer {
+  name: "loss_cls_184"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_184"
+  bottom: "labels_184"
+  top: "cls_loss_184"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_186"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_186"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_186"
+  type: "Python"
+  bottom: "cls_score_186"
+  bottom: "labels"
+  top: "routing_186"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 186"
+  }
+}
+layer {
+  name: "loss_cls_186"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_186"
+  bottom: "labels_186"
+  top: "cls_loss_186"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_187"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_187"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_187"
+  type: "Python"
+  bottom: "cls_score_187"
+  bottom: "labels"
+  top: "routing_187"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 187"
+  }
+}
+layer {
+  name: "loss_cls_187"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_187"
+  bottom: "labels_187"
+  top: "cls_loss_187"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_188"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_188"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_188"
+  type: "Python"
+  bottom: "cls_score_188"
+  bottom: "labels"
+  top: "routing_188"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 188"
+  }
+}
+layer {
+  name: "loss_cls_188"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_188"
+  bottom: "labels_188"
+  top: "cls_loss_188"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_199"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_199"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_199"
+  type: "Python"
+  bottom: "cls_score_199"
+  bottom: "labels"
+  top: "routing_199"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 199"
+  }
+}
+layer {
+  name: "loss_cls_199"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_199"
+  bottom: "labels_199"
+  top: "cls_loss_199"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_215"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_215"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_215"
+  type: "Python"
+  bottom: "cls_score_215"
+  bottom: "labels"
+  top: "routing_215"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 215"
+  }
+}
+layer {
+  name: "loss_cls_215"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_215"
+  bottom: "labels_215"
+  top: "cls_loss_215"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_222"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_222"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_222"
+  type: "Python"
+  bottom: "cls_score_222"
+  bottom: "labels"
+  top: "routing_222"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 222"
+  }
+}
+layer {
+  name: "loss_cls_222"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_222"
+  bottom: "labels_222"
+  top: "cls_loss_222"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_224"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_224"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_224"
+  type: "Python"
+  bottom: "cls_score_224"
+  bottom: "labels"
+  top: "routing_224"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 224"
+  }
+}
+layer {
+  name: "loss_cls_224"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_224"
+  bottom: "labels_224"
+  top: "cls_loss_224"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_226"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_226"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_226"
+  type: "Python"
+  bottom: "cls_score_226"
+  bottom: "labels"
+  top: "routing_226"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 226"
+  }
+}
+layer {
+  name: "loss_cls_226"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_226"
+  bottom: "labels_226"
+  top: "cls_loss_226"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_238"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_238"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_238"
+  type: "Python"
+  bottom: "cls_score_238"
+  bottom: "labels"
+  top: "routing_238"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 238"
+  }
+}
+layer {
+  name: "loss_cls_238"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_238"
+  bottom: "labels_238"
+  top: "cls_loss_238"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_251"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_251"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_251"
+  type: "Python"
+  bottom: "cls_score_251"
+  bottom: "labels"
+  top: "routing_251"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 251"
+  }
+}
+layer {
+  name: "loss_cls_251"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_251"
+  bottom: "labels_251"
+  top: "cls_loss_251"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_252"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_252"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_252"
+  type: "Python"
+  bottom: "cls_score_252"
+  bottom: "labels"
+  top: "routing_252"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 252"
+  }
+}
+layer {
+  name: "loss_cls_252"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_252"
+  bottom: "labels_252"
+  top: "cls_loss_252"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_253"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_253"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_253"
+  type: "Python"
+  bottom: "cls_score_253"
+  bottom: "labels"
+  top: "routing_253"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 253"
+  }
+}
+layer {
+  name: "loss_cls_253"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_253"
+  bottom: "labels_253"
+  top: "cls_loss_253"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_254"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_254"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_254"
+  type: "Python"
+  bottom: "cls_score_254"
+  bottom: "labels"
+  top: "routing_254"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 254"
+  }
+}
+layer {
+  name: "loss_cls_254"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_254"
+  bottom: "labels_254"
+  top: "cls_loss_254"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_255"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_255"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_255"
+  type: "Python"
+  bottom: "cls_score_255"
+  bottom: "labels"
+  top: "routing_255"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 255"
+  }
+}
+layer {
+  name: "loss_cls_255"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_255"
+  bottom: "labels_255"
+  top: "cls_loss_255"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_256"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_256"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_256"
+  type: "Python"
+  bottom: "cls_score_256"
+  bottom: "labels"
+  top: "routing_256"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 256"
+  }
+}
+layer {
+  name: "loss_cls_256"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_256"
+  bottom: "labels_256"
+  top: "cls_loss_256"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_268"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_268"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_268"
+  type: "Python"
+  bottom: "cls_score_268"
+  bottom: "labels"
+  top: "routing_268"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 268"
+  }
+}
+layer {
+  name: "loss_cls_268"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_268"
+  bottom: "labels_268"
+  top: "cls_loss_268"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_270"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_270"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_270"
+  type: "Python"
+  bottom: "cls_score_270"
+  bottom: "labels"
+  top: "routing_270"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 270"
+  }
+}
+layer {
+  name: "loss_cls_270"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_270"
+  bottom: "labels_270"
+  top: "cls_loss_270"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_275"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_275"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_275"
+  type: "Python"
+  bottom: "cls_score_275"
+  bottom: "labels"
+  top: "routing_275"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 275"
+  }
+}
+layer {
+  name: "loss_cls_275"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_275"
+  bottom: "labels_275"
+  top: "cls_loss_275"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_278"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_278"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "routing_278"
+  type: "Python"
+  bottom: "cls_score_278"
+  bottom: "labels"
+  top: "routing_278"
+  python_param {
+    module: "routing_layer.layer"
+    layer: "RoutingLayer"
+    param_str: "\'routing_idx\': 278"
+  }
+}
+layer {
+  name: "loss_cls_278"
+  type: "SoftmaxWithLoss"
+  bottom: "routing_278"
+  bottom: "labels_278"
+  top: "cls_loss_278"
+  loss_weight: 1
+  propagate_down: true
+  propagate_down: false
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
