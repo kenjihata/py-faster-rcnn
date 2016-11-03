@@ -86,7 +86,7 @@ def demo(net, image_name):
     # Detect all object classes and regress object bounds
     timer = Timer()
     timer.tic()
-    scores, boxes = im_detect(net, im)
+    scores, boxes = im_detect_with_routing(net, im, tree)
     #print scores
     #print 
     #print scores[0,:], '\n'
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # Warmup on a dummy image
     im = 128 * np.ones((300, 500, 3), dtype=np.uint8)
     for i in xrange(2):
-        _, _= im_detect(net, im)
+        _, _= im_detect_with_routing(net, im, tree)
 #    with open(os.path.join(cfg.DATA_DIR, 'VisualGenome', 'VisualGenome2016', 'ImageSets', 'Main', 'test.txt')) as f:
     with open(os.path.join('data', 'ImageNet', 'ILSVRC2015', 'ImageSets', 'DET', 'val.txt')) as f:
         im_names = [x.rstrip('\n').split()[0]+'.JPEG' for x in f.readlines()]

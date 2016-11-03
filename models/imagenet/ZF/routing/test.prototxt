@@ -476,10 +476,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_2"
+  name: "cls_score_3"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_2"
+  top: "cls_score_3"
   param {
     lr_mult: 1.0
   }
@@ -499,10 +499,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_2"
+  name: "cls_prob_3"
   type: "Softmax"
-  bottom: "cls_score_2"
-  top: "cls_prob_2"
+  bottom: "cls_score_3"
+  top: "cls_prob_3"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -916,7 +916,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 5
+    num_output: 4
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -949,7 +949,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 4
+    num_output: 5
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1180,7 +1180,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 4
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1213,7 +1213,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 4
+    num_output: 6
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1246,7 +1246,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 6
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1312,7 +1312,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 5
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1334,6 +1334,39 @@ layer {
   }
 }
 layer {
+  name: "cls_score_34"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_34"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 7
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_34"
+  type: "Softmax"
+  bottom: "cls_score_34"
+  top: "cls_prob_34"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
   name: "cls_score_35"
   type: "InnerProduct"
   bottom: "fc7"
@@ -1345,7 +1378,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 7
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1367,105 +1400,6 @@ layer {
   }
 }
 layer {
-  name: "cls_score_36"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_36"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 5
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_36"
-  type: "Softmax"
-  bottom: "cls_score_36"
-  top: "cls_prob_36"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_37"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_37"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_37"
-  type: "Softmax"
-  bottom: "cls_score_37"
-  top: "cls_prob_37"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_39"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_39"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_39"
-  type: "Softmax"
-  bottom: "cls_score_39"
-  top: "cls_prob_39"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
   name: "cls_score_40"
   type: "InnerProduct"
   bottom: "fc7"
@@ -1477,7 +1411,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 4
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1499,6 +1433,72 @@ layer {
   }
 }
 layer {
+  name: "cls_score_41"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_41"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_41"
+  type: "Softmax"
+  bottom: "cls_score_41"
+  top: "cls_prob_41"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_43"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_43"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_43"
+  type: "Softmax"
+  bottom: "cls_score_43"
+  top: "cls_prob_43"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
   name: "cls_score_45"
   type: "InnerProduct"
   bottom: "fc7"
@@ -1510,7 +1510,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 4
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1532,6 +1532,39 @@ layer {
   }
 }
 layer {
+  name: "cls_score_46"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_46"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_46"
+  type: "Softmax"
+  bottom: "cls_score_46"
+  top: "cls_prob_46"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
   name: "cls_score_47"
   type: "InnerProduct"
   bottom: "fc7"
@@ -1543,7 +1576,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 5
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1576,7 +1609,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 5
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1598,76 +1631,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_49"
+  name: "cls_score_54"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_49"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 3
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_49"
-  type: "Softmax"
-  bottom: "cls_score_49"
-  top: "cls_prob_49"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_50"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_50"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 3
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_50"
-  type: "Softmax"
-  bottom: "cls_score_50"
-  top: "cls_prob_50"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_53"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_53"
+  top: "cls_score_54"
   param {
     lr_mult: 1.0
   }
@@ -1687,10 +1654,43 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_53"
+  name: "cls_prob_54"
   type: "Softmax"
-  bottom: "cls_score_53"
-  top: "cls_prob_53"
+  bottom: "cls_score_54"
+  top: "cls_prob_54"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_55"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_55"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_55"
+  type: "Softmax"
+  bottom: "cls_score_55"
+  top: "cls_prob_55"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -1796,39 +1796,6 @@ layer {
   }
 }
 layer {
-  name: "cls_score_65"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_65"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_65"
-  type: "Softmax"
-  bottom: "cls_score_65"
-  top: "cls_prob_65"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
   name: "cls_score_68"
   type: "InnerProduct"
   bottom: "fc7"
@@ -1862,10 +1829,43 @@ layer {
   }
 }
 layer {
-  name: "cls_score_76"
+  name: "cls_score_70"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_76"
+  top: "cls_score_70"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_70"
+  type: "Softmax"
+  bottom: "cls_score_70"
+  top: "cls_prob_70"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_74"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_74"
   param {
     lr_mult: 1.0
   }
@@ -1885,10 +1885,43 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_76"
+  name: "cls_prob_74"
   type: "Softmax"
-  bottom: "cls_score_76"
-  top: "cls_prob_76"
+  bottom: "cls_score_74"
+  top: "cls_prob_74"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_77"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_77"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_77"
+  type: "Softmax"
+  bottom: "cls_score_77"
+  top: "cls_prob_77"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -1906,7 +1939,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 10
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -1961,43 +1994,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_80"
+  name: "cls_score_83"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_80"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 10
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_80"
-  type: "Softmax"
-  bottom: "cls_score_80"
-  top: "cls_prob_80"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_81"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_81"
+  top: "cls_score_83"
   param {
     lr_mult: 1.0
   }
@@ -2017,20 +2017,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_81"
+  name: "cls_prob_83"
   type: "Softmax"
-  bottom: "cls_score_81"
-  top: "cls_prob_81"
+  bottom: "cls_score_83"
+  top: "cls_prob_83"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_82"
+  name: "cls_score_88"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_82"
+  top: "cls_score_88"
   param {
     lr_mult: 1.0
   }
@@ -2050,20 +2050,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_82"
+  name: "cls_prob_88"
   type: "Softmax"
-  bottom: "cls_score_82"
-  top: "cls_prob_82"
+  bottom: "cls_score_88"
+  top: "cls_prob_88"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_86"
+  name: "cls_score_90"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_86"
+  top: "cls_score_90"
   param {
     lr_mult: 1.0
   }
@@ -2083,10 +2083,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_86"
+  name: "cls_prob_90"
   type: "Softmax"
-  bottom: "cls_score_86"
-  top: "cls_prob_86"
+  bottom: "cls_score_90"
+  top: "cls_prob_90"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2104,7 +2104,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2126,10 +2126,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_96"
+  name: "cls_score_105"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_96"
+  top: "cls_score_105"
   param {
     lr_mult: 1.0
   }
@@ -2149,20 +2149,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_96"
+  name: "cls_prob_105"
   type: "Softmax"
-  bottom: "cls_score_96"
-  top: "cls_prob_96"
+  bottom: "cls_score_105"
+  top: "cls_prob_105"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_103"
+  name: "cls_score_109"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_103"
+  top: "cls_score_109"
   param {
     lr_mult: 1.0
   }
@@ -2182,10 +2182,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_103"
+  name: "cls_prob_109"
   type: "Softmax"
-  bottom: "cls_score_103"
-  top: "cls_prob_103"
+  bottom: "cls_score_109"
+  top: "cls_prob_109"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2203,7 +2203,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 8
+    num_output: 4
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2219,6 +2219,39 @@ layer {
   type: "Softmax"
   bottom: "cls_score_111"
   top: "cls_prob_111"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_112"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_112"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_112"
+  type: "Softmax"
+  bottom: "cls_score_112"
+  top: "cls_prob_112"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2258,10 +2291,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_116"
+  name: "cls_score_115"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_116"
+  top: "cls_score_115"
   param {
     lr_mult: 1.0
   }
@@ -2269,7 +2302,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 8
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2281,10 +2314,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_116"
+  name: "cls_prob_115"
   type: "Softmax"
-  bottom: "cls_score_116"
-  top: "cls_prob_116"
+  bottom: "cls_score_115"
+  top: "cls_prob_115"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2302,7 +2335,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 4
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2324,10 +2357,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_119"
+  name: "cls_score_124"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_119"
+  top: "cls_score_124"
   param {
     lr_mult: 1.0
   }
@@ -2347,20 +2380,53 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_119"
+  name: "cls_prob_124"
   type: "Softmax"
-  bottom: "cls_score_119"
-  top: "cls_prob_119"
+  bottom: "cls_score_124"
+  top: "cls_prob_124"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_120"
+  name: "cls_score_126"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_120"
+  top: "cls_score_126"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_126"
+  type: "Softmax"
+  bottom: "cls_score_126"
+  top: "cls_prob_126"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_129"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_129"
   param {
     lr_mult: 1.0
   }
@@ -2380,20 +2446,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_120"
+  name: "cls_prob_129"
   type: "Softmax"
-  bottom: "cls_score_120"
-  top: "cls_prob_120"
+  bottom: "cls_score_129"
+  top: "cls_prob_129"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_122"
+  name: "cls_score_130"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_122"
+  top: "cls_score_130"
   param {
     lr_mult: 1.0
   }
@@ -2413,20 +2479,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_122"
+  name: "cls_prob_130"
   type: "Softmax"
-  bottom: "cls_score_122"
-  top: "cls_prob_122"
+  bottom: "cls_score_130"
+  top: "cls_prob_130"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_125"
+  name: "cls_score_134"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_125"
+  top: "cls_score_134"
   param {
     lr_mult: 1.0
   }
@@ -2446,86 +2512,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_125"
+  name: "cls_prob_134"
   type: "Softmax"
-  bottom: "cls_score_125"
-  top: "cls_prob_125"
+  bottom: "cls_score_134"
+  top: "cls_prob_134"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_127"
+  name: "cls_score_135"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_127"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_127"
-  type: "Softmax"
-  bottom: "cls_score_127"
-  top: "cls_prob_127"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_131"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_131"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_131"
-  type: "Softmax"
-  bottom: "cls_score_131"
-  top: "cls_prob_131"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_132"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_132"
+  top: "cls_score_135"
   param {
     lr_mult: 1.0
   }
@@ -2545,20 +2545,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_132"
+  name: "cls_prob_135"
   type: "Softmax"
-  bottom: "cls_score_132"
-  top: "cls_prob_132"
+  bottom: "cls_score_135"
+  top: "cls_prob_135"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_140"
+  name: "cls_score_142"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_140"
+  top: "cls_score_142"
   param {
     lr_mult: 1.0
   }
@@ -2578,20 +2578,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_140"
+  name: "cls_prob_142"
   type: "Softmax"
-  bottom: "cls_score_140"
-  top: "cls_prob_140"
+  bottom: "cls_score_142"
+  top: "cls_prob_142"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_148"
+  name: "cls_score_147"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_148"
+  top: "cls_score_147"
   param {
     lr_mult: 1.0
   }
@@ -2599,7 +2599,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 4
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2611,10 +2611,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_148"
+  name: "cls_prob_147"
   type: "Softmax"
-  bottom: "cls_score_148"
-  top: "cls_prob_148"
+  bottom: "cls_score_147"
+  top: "cls_prob_147"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2632,7 +2632,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2654,72 +2654,6 @@ layer {
   }
 }
 layer {
-  name: "cls_score_150"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_150"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 3
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_150"
-  type: "Softmax"
-  bottom: "cls_score_150"
-  top: "cls_prob_150"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_151"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_151"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_151"
-  type: "Softmax"
-  bottom: "cls_score_151"
-  top: "cls_prob_151"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
   name: "cls_score_152"
   type: "InnerProduct"
   bottom: "fc7"
@@ -2731,7 +2665,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 4
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2753,6 +2687,72 @@ layer {
   }
 }
 layer {
+  name: "cls_score_153"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_153"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_153"
+  type: "Softmax"
+  bottom: "cls_score_153"
+  top: "cls_prob_153"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_154"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_154"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_154"
+  type: "Softmax"
+  bottom: "cls_score_154"
+  top: "cls_prob_154"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
   name: "cls_score_155"
   type: "InnerProduct"
   bottom: "fc7"
@@ -2764,7 +2764,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2786,10 +2786,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_158"
+  name: "cls_score_156"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_158"
+  top: "cls_score_156"
   param {
     lr_mult: 1.0
   }
@@ -2809,20 +2809,53 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_158"
+  name: "cls_prob_156"
   type: "Softmax"
-  bottom: "cls_score_158"
-  top: "cls_prob_158"
+  bottom: "cls_score_156"
+  top: "cls_prob_156"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_159"
+  name: "cls_score_169"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_159"
+  top: "cls_score_169"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_169"
+  type: "Softmax"
+  bottom: "cls_score_169"
+  top: "cls_prob_169"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_176"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_176"
   param {
     lr_mult: 1.0
   }
@@ -2842,20 +2875,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_159"
+  name: "cls_prob_176"
   type: "Softmax"
-  bottom: "cls_score_159"
-  top: "cls_prob_159"
+  bottom: "cls_score_176"
+  top: "cls_prob_176"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_170"
+  name: "cls_score_177"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_170"
+  top: "cls_score_177"
   param {
     lr_mult: 1.0
   }
@@ -2875,76 +2908,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_170"
+  name: "cls_prob_177"
   type: "Softmax"
-  bottom: "cls_score_170"
-  top: "cls_prob_170"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_173"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_173"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_173"
-  type: "Softmax"
-  bottom: "cls_score_173"
-  top: "cls_prob_173"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_184"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_184"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_184"
-  type: "Softmax"
-  bottom: "cls_score_184"
-  top: "cls_prob_184"
+  bottom: "cls_score_177"
+  top: "cls_prob_177"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -2962,7 +2929,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -2984,10 +2951,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_187"
+  name: "cls_score_193"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_187"
+  top: "cls_score_193"
   param {
     lr_mult: 1.0
   }
@@ -3007,20 +2974,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_187"
+  name: "cls_prob_193"
   type: "Softmax"
-  bottom: "cls_score_187"
-  top: "cls_prob_187"
+  bottom: "cls_score_193"
+  top: "cls_prob_193"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_188"
+  name: "cls_score_194"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_188"
+  top: "cls_score_194"
   param {
     lr_mult: 1.0
   }
@@ -3040,20 +3007,53 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_188"
+  name: "cls_prob_194"
   type: "Softmax"
-  bottom: "cls_score_188"
-  top: "cls_prob_188"
+  bottom: "cls_score_194"
+  top: "cls_prob_194"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_199"
+  name: "cls_score_195"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_199"
+  top: "cls_score_195"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_195"
+  type: "Softmax"
+  bottom: "cls_score_195"
+  top: "cls_prob_195"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_197"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_197"
   param {
     lr_mult: 1.0
   }
@@ -3073,10 +3073,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_199"
+  name: "cls_prob_197"
   type: "Softmax"
-  bottom: "cls_score_199"
-  top: "cls_prob_199"
+  bottom: "cls_score_197"
+  top: "cls_prob_197"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -3116,10 +3116,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_222"
+  name: "cls_score_225"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_222"
+  top: "cls_score_225"
   param {
     lr_mult: 1.0
   }
@@ -3139,20 +3139,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_222"
+  name: "cls_prob_225"
   type: "Softmax"
-  bottom: "cls_score_222"
-  top: "cls_prob_222"
+  bottom: "cls_score_225"
+  top: "cls_prob_225"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_224"
+  name: "cls_score_233"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_224"
+  top: "cls_score_233"
   param {
     lr_mult: 1.0
   }
@@ -3172,20 +3172,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_224"
+  name: "cls_prob_233"
   type: "Softmax"
-  bottom: "cls_score_224"
-  top: "cls_prob_224"
+  bottom: "cls_score_233"
+  top: "cls_prob_233"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_226"
+  name: "cls_score_235"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_226"
+  top: "cls_score_235"
   param {
     lr_mult: 1.0
   }
@@ -3205,20 +3205,20 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_226"
+  name: "cls_prob_235"
   type: "Softmax"
-  bottom: "cls_score_226"
-  top: "cls_prob_226"
+  bottom: "cls_score_235"
+  top: "cls_prob_235"
   loss_param {
     ignore_label: -1
     normalize: true
   }
 }
 layer {
-  name: "cls_score_238"
+  name: "cls_score_243"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_238"
+  top: "cls_score_243"
   param {
     lr_mult: 1.0
   }
@@ -3238,10 +3238,43 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_238"
+  name: "cls_prob_243"
   type: "Softmax"
-  bottom: "cls_score_238"
-  top: "cls_prob_238"
+  bottom: "cls_score_243"
+  top: "cls_prob_243"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_250"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_250"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_250"
+  type: "Softmax"
+  bottom: "cls_score_250"
+  top: "cls_prob_250"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -3275,39 +3308,6 @@ layer {
   type: "Softmax"
   bottom: "cls_score_251"
   top: "cls_prob_251"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_252"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_252"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 4
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_252"
-  type: "Softmax"
-  bottom: "cls_score_252"
-  top: "cls_prob_252"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -3380,109 +3380,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_255"
+  name: "cls_score_258"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_255"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_255"
-  type: "Softmax"
-  bottom: "cls_score_255"
-  top: "cls_prob_255"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_256"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_256"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_256"
-  type: "Softmax"
-  bottom: "cls_score_256"
-  top: "cls_prob_256"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_268"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_268"
-  param {
-    lr_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-  }
-  inner_product_param {
-    num_output: 2
-    weight_filler {
-      type: "gaussian"
-      std: 0.001
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "cls_prob_268"
-  type: "Softmax"
-  bottom: "cls_score_268"
-  top: "cls_prob_268"
-  loss_param {
-    ignore_label: -1
-    normalize: true
-  }
-}
-layer {
-  name: "cls_score_270"
-  type: "InnerProduct"
-  bottom: "fc7"
-  top: "cls_score_270"
+  top: "cls_score_258"
   param {
     lr_mult: 1.0
   }
@@ -3502,10 +3403,109 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_270"
+  name: "cls_prob_258"
   type: "Softmax"
-  bottom: "cls_score_270"
-  top: "cls_prob_270"
+  bottom: "cls_score_258"
+  top: "cls_prob_258"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_259"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_259"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_259"
+  type: "Softmax"
+  bottom: "cls_score_259"
+  top: "cls_prob_259"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_267"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_267"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_267"
+  type: "Softmax"
+  bottom: "cls_score_267"
+  top: "cls_prob_267"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  name: "cls_score_269"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "cls_score_269"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "cls_prob_269"
+  type: "Softmax"
+  bottom: "cls_score_269"
+  top: "cls_prob_269"
   loss_param {
     ignore_label: -1
     normalize: true
@@ -3523,7 +3523,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 3
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -3545,10 +3545,10 @@ layer {
   }
 }
 layer {
-  name: "cls_score_278"
+  name: "cls_score_282"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "cls_score_278"
+  top: "cls_score_282"
   param {
     lr_mult: 1.0
   }
@@ -3556,7 +3556,7 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.001
@@ -3568,10 +3568,10 @@ layer {
   }
 }
 layer {
-  name: "cls_prob_278"
+  name: "cls_prob_282"
   type: "Softmax"
-  bottom: "cls_score_278"
-  top: "cls_prob_278"
+  bottom: "cls_score_282"
+  top: "cls_prob_282"
   loss_param {
     ignore_label: -1
     normalize: true
